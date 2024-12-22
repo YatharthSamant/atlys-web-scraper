@@ -8,6 +8,7 @@ from ..storage.storage_strategy import StorageStrategy
 import os
 import time
 from typing import List, Optional
+import uuid
 
 class DentalStallScraper:
     def __init__(self, num_pages: int = settings.NUM_PAGES, proxy: Optional[str] = settings.PROXY, notifier: Optional[NotificationStrategy] = None, storage: Optional[StorageStrategy] = None):
@@ -52,12 +53,17 @@ class DentalStallScraper:
             if not self.storage.is_product_updated(product):
                 self.products.append(product)
 
+
     def download_image(self, url: str) -> str:
         response = requests.get(url)
         if response.status_code == 200:
             image_name = os.path.basename(url)
             if not image_name or image_name == '/':
-                image_name = f"image_{int(time.time())}.jpg"  # Fallback name
+                image_name = f"image_{uuid.uuid4()}.jpg"  # Use UUID for unique name
+            else:
+                # Add UUID to the original image name to ensure uniqueness
+                name, ext = os.path.splitext(image_name)
+                image_name = f"{name}_{uuid.uuid4()}{ext}"
             image_path = os.path.join(self.image_dir, image_name)
             with open(image_path, 'wb') as f:
                 f.write(response.content)

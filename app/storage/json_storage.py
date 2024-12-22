@@ -30,25 +30,8 @@ class JSONStorage(StorageStrategy):
         return redis_data
 
     def save_products(self, products: List[Product]):
-        existing_data = self.load_cache()
-        redis_data = self.load_redis_cache()
-
-        for product in products:
-            product_dict = product.dict()
-            redis_product = redis_data.get(product.product_title)
-            if redis_product:
-                if redis_product['product_price'] == product.product_price:
-                    continue  # Skip if the price remains the same
-                elif redis_product['product_price'] < product.product_price:
-                    existing_data[product.product_title] = product_dict  # Update if the price has increased
-            else:
-                existing_data[product.product_title] = product_dict  # Add new entry if the product does not exist
-
         with open(self.json_path, 'w') as f:
-            json.dump(existing_data, f, indent=4)
-
-        # Update the cache
-        self.cache = existing_data
+            json.dump([product.dict() for product in products], f, indent=4)
 
     def is_product_updated(self, product: Product) -> bool:
         cached_product = self.redis_client.get(product.product_title)
@@ -57,4 +40,4 @@ class JSONStorage(StorageStrategy):
             if cached_product['product_price'] == product.product_price:
                 return False
         self.redis_client.set(product.product_title, json.dumps(product.dict()), ex=self.ttl)
-        return True
+        return False
