@@ -19,6 +19,44 @@ This project is a Python-based web scraping tool using FastAPI to automate scrap
 3. **Retry Mechanism**  
    - Retries failed page requests after a configurable delay, improving resilience against intermittent errors.
 
+### Project Structure
+```
+  atly-web-scraper/
+  ├── app/
+  │   ├── __init__.py
+  │   ├── models/
+  │   │   ├── __init__.py
+  │   │   ├── products.py
+  │   ├── scrapers/
+  │   │   ├── __init__.py
+  │   │   ├── dental_scraper.py
+  │   │   ├── scraper_factory.py
+  │   ├── storage/
+  │   │   ├── __init__.py
+  │   │   ├── storage_strategy.py
+  │   │   ├── json_storage.py
+  │   ├── notifications/
+  │   │   ├── __init__.py
+  │   │   ├── notification_strategy.py
+  │   │   ├── console_strategy.py
+  │   ├── api/
+  │   │   ├── __init__.py
+  │   │   ├── routes.py
+  │   ├── common/
+  │   │   ├── cache.py
+  │   ├── core/
+  │   │   ├── __init__.py
+  │   │   ├── auth.py
+  │   │   ├── config.py
+  │   │   ├── schemas.py
+  ├── run.py
+  ├── requirements/
+  │   │   ├── dev.txt
+  │   │   ├── prod.txt
+  ├── .env
+  └── README.md
+```
+
 ### Data Storage
 - Scraped data is stored locally in JSON format:
   ```json
@@ -62,7 +100,7 @@ This project is a Python-based web scraping tool using FastAPI to automate scrap
 
 3. Install dependencies:
    ```bash
-   pip install -r requirements.txt
+   pip install -r requirements/prod.txt
    ```
 
 ---
@@ -77,7 +115,7 @@ This project is a Python-based web scraping tool using FastAPI to automate scrap
 
 2. **API Endpoints**
    - **`/scrape`** (POST): Start a new scraping session. Accepts optional parameters:
-     - `pages`: Number of pages to scrape.
+     - `num_pages`: Number of pages to scrape.
      - `proxy`: Proxy string for request routing.
    - **Authentication**: Add a static token in the request header:
      ```text
