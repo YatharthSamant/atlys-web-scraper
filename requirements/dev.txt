@@ -1,0 +1,3 @@
+Flask
+python-dotenv
+# Add other development dependencies here
